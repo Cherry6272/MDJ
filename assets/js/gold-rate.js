@@ -2,29 +2,34 @@ $(document).ready(function () {
     // ==========================================
     // CONFIGURATION
     // ==========================================
-    // Replace 'YOUR_API_KEY' with your actual API key from metalpriceapi.com or similar
-    const API_KEY = 'YOUR_API_KEY';
+    const API_KEY = '09b766d75c57943c1774041718f5f3e8';
     const BASE_URL = 'https://api.metalpriceapi.com/v1/latest';
-    // If using a different provider, update the URL and response parsing logic.
 
-    // Fallback/Mock Data (used if API key is missing or request fails)
+    // Fallback/Mock Data (used if request fails)
     const MOCK_DATA = {
-        base: 'INR',
         rates: {
-            XAU: 205000 // Approximate price of 1 oz gold in INR (Mock)
+            INR: 83.0,
+            XAU: 0.00049
         }
     };
 
     // Conversion Constants
     const OUNCE_TO_GRAM = 31.1035;
     const PURITY_22K = 0.916;
-    const PURITY_18K = 0.750;
+    // const PURITY_18K = 0.750; // Removed
+    const TAX_MULTIPLIER = 1.13; // Adding ~13% for Import Duty + GST
+    const CACHE_KEY_DATA = 'mdj_gold_rate_data';
+    const CACHE_KEY_DATE = 'mdj_gold_rate_date';
 
     function fetchGoldRate() {
-        // If no API key is set, use mock data immediately
-        if (API_KEY === 'YOUR_API_KEY') {
-            console.log("No API Key detected. Using Mock Data.");
-            updateUI(MOCK_DATA.rates.XAU);
+        const today = new Date().toDateString();
+        const cachedDate = localStorage.getItem(CACHE_KEY_DATE);
+        const cachedData = localStorage.getItem(CACHE_KEY_DATA);
+
+        // Check cache
+        if (cachedDate === today && cachedData) {
+            console.log("Using Cached Data:", JSON.parse(cachedData));
+            processRates(JSON.parse(cachedData));
             return;
         }
 
@@ -32,55 +37,71 @@ $(document).ready(function () {
             url: BASE_URL,
             data: {
                 api_key: API_KEY,
-                base: 'INR',
-                currencies: 'XAU'
+                base: 'USD', // Free tier often restricts base to USD
+                currencies: 'XAU,INR'
             },
             success: function (response) {
-                if (response && response.rates && response.rates.XAU) {
-                    // Note: Some APIs return 1 unit of currency per XAU, others return value of XAU in currency.
-                    // MetalPriceAPI standard: Base = USD, returns rates. 
-                    // If Base = INR, XAU might be very small number (1 INR = 0.000... XAU).
-                    // Let's assume we want price of XAU in INR.
-                    // Usually: GET /latest?base=USD&currencies=XAU,INR -> calculate XAU/INR.
-
-                    // Simplifying for the recommended free API structure (MetalPriceAPI free tier often restricts 'base' to USD).
-                    // We might need to fetch USD-XAU and USD-INR and calculate.
-
-                    // Logic for 'Base=USD' (common free tier restriction):
-                    // Rate XAU = price of 1 USD in Gold (very low number) or price of 1 Gold in USD?
-                    // Standard JSON: {"rates": {"XAU": 0.0005...}} means 1 USD = 0.0005 oz Gold. 
-                    // Price of 1 oz Gold in USD = 1 / 0.0005...
-
-                    // Let's stick to a simpler mock implementation structure for the user to replace with their specific API logic.
-                    // Passing the raw rate to updateUI.
-
-                    // For now, let's assume the response gives us the price directly or we fallback.
+                if (response && response.success && response.rates) {
                     console.log("API Response:", response);
-                    updateUI(MOCK_DATA.rates.XAU); // Safe fallback for now
+
+                    // Cache the successful response
+                    const today = new Date().toDateString();
+                    localStorage.setItem(CACHE_KEY_DATA, JSON.stringify(response.rates));
+                    localStorage.setItem(CACHE_KEY_DATE, today);
+
+                    processRates(response.rates);
                 } else {
-                    showError();
+                    console.error("API request unsuccessful", response);
+
+                    // Try to use old cache if available (fallback)
+                    const cachedData = localStorage.getItem(CACHE_KEY_DATA);
+                    if (cachedData) {
+                        console.log("Falling back to expired cache due to API error");
+                        processRates(JSON.parse(cachedData));
+                    } else {
+                        showError();
+                    }
                 }
             },
             error: function (err) {
                 console.error("API Error:", err);
-                // Fallback to mock data on error for demonstration
-                updateUI(MOCK_DATA.rates.XAU);
+                // Fallback to cache on error
+                const cachedData = localStorage.getItem(CACHE_KEY_DATA);
+                if (cachedData) {
+                    console.log("Falling back to cache due to API error");
+                    processRates(JSON.parse(cachedData));
+                } else {
+                    showError();
+                }
             }
         });
+    }
+
+    function processRates(rates) {
+        if (rates.XAU && rates.INR) {
+            const pricePerOunceInUSD = 1 / rates.XAU;
+            const pricePerOunceInINR = pricePerOunceInUSD * rates.INR;
+
+            // Apply Tax Multiplier for correct local pricing
+            const finalPricePerOunceINR = pricePerOunceInINR * TAX_MULTIPLIER;
+
+            updateUI(finalPricePerOunceINR);
+        } else {
+            console.error("Incomplete rates data", rates);
+            showError();
+        }
     }
 
     function updateUI(pricePerOunceINR) {
         // 1. Calculate Price per Gram (24k)
         const pricePerGram24k = pricePerOunceINR / OUNCE_TO_GRAM;
 
-        // 2. Calculate 22k and 18k
+        // 2. Calculate 22k
         const pricePerGram22k = pricePerGram24k * PURITY_22K;
-        const pricePerGram18k = pricePerGram24k * PURITY_18K;
 
         // 3. Update DOM
         $('#price-24k').text('₹ ' + formatMoney(pricePerGram24k));
         $('#price-22k').text('₹ ' + formatMoney(pricePerGram22k));
-        $('#price-18k').text('₹ ' + formatMoney(pricePerGram18k));
 
         // 4. Update Date
         const now = new Date();
@@ -95,9 +116,18 @@ $(document).ready(function () {
     }
 
     function showError() {
-        $('#api-error').show();
-        // Still show mock data so layout doesn't break?
-        updateUI(MOCK_DATA.rates.XAU);
+        $('#api-error').show().text("Unable to fetch live rates. Displaying estimated values.");
+
+        // Use Mock/Fallback data to show *something*
+        // Mock Calculation assuming roughly $2000/oz
+        // const estimatedOuncePriceINR = (1 / MOCK_DATA.rates.XAU) * MOCK_DATA.rates.INR;
+        // updateUI(estimatedOuncePriceINR);
+        // OR just leave the error message and let the "Loading..." stay or update nicely.
+        // Let's hide the loading text and show error.
+
+        $('#price-24k').text('---');
+        $('#price-22k').text('---');
+        $('#price-18k').text('---');
     }
 
     // Initial Call
