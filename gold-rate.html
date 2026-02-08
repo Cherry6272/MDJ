@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="wpOceans">
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+    <title>Live Gold Rates - Marudhar Jewellers</title>
+    <link href="assets/css/themify-icons.css" rel="stylesheet">
+    <link href="assets/css/flaticon_jowenly.css" rel="stylesheet">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/owl.carousel.css" rel="stylesheet">
+    <link href="assets/css/owl.theme.css" rel="stylesheet">
+    <link href="assets/css/slick.css" rel="stylesheet">
+    <link href="assets/css/slick-theme.css" rel="stylesheet">
+    <link href="assets/css/swiper.min.css" rel="stylesheet">
+    <link href="assets/css/owl.transitions.css" rel="stylesheet">
+    <link href="assets/css/jquery.fancybox.css" rel="stylesheet">
+    <link href="assets/css/odometer-theme-default.css" rel="stylesheet">
+    <link href="assets/sass/style.css" rel="stylesheet">
+    <style>
+        .gold-rate-section {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+        }
+
+        .gold-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid #eee;
+        }
+
+        .gold-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-color: #d4b067;
+        }
+
+        .gold-card .icon {
+            font-size: 50px;
+            color: #d4b067;
+            margin-bottom: 20px;
+        }
+
+        .gold-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .gold-card .purity {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .gold-card .price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #d4b067;
+            margin-bottom: 10px;
+        }
+
+        .gold-card .price small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #999;
+        }
+
+        .rate-date {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .api-attribution {
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- start page-wrapper -->
+    <div class="page-wrapper">
+
+        <!-- Start header -->
+        <header id="header">
+            <div class="wpo-site-header">
+                <nav class="navigation navbar navbar-expand-lg navbar-light">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3 col-md-3 col-3 d-lg-none dl-block">
+                                <div class="mobail-menu">
+                                    <button type="button" class="navbar-toggler open-btn">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar first-angle"></span>
+                                        <span class="icon-bar middle-angle"></span>
+                                        <span class="icon-bar last-angle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-6">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand" href="index.html"><img src="assets/images/mdjlogo.svg"
+                                            alt="logo"></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-1 col-1">
+                                <div id="navbar" class="collapse navbar-collapse navigation-holder">
+                                    <button class="menu-close"><i class="ti-close"></i></button>
+                                    <ul class="nav navbar-nav mb-2 mb-lg-0">
+                                        <li><a href="index.html">Home</a></li>
+                                        <li><a href="about.html">About us </a></li>
+                                        <li><a class="active" href="gold-rate.html">Gold Rate</a></li>
+                                        <li><a href="contact.html">Contact</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- start wpo-page-title -->
+        <section class="wpo-page-title">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-xs-12">
+                        <div class="wpo-breadcumb-wrap">
+                            <h2>Today's Gold Rate</h2>
+                            <ol>
+                                <li><a href="index.html">Home</a></li>
+                                <li>Gold Rate</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="left-img">
+                <img src="assets/images/pagetitle.png" alt="">
+            </div>
+            <div class="right-img">
+                <div class="shape-1">
+                    <img src="assets/images/shape-1.png" alt="">
+                </div>
+                <div class="image">
+                    <img src="assets/images/pagetitle-1.jpg" alt="">
+                </div>
+                <div class="shape-2">
+                    <img src="assets/images/shape-2.png" alt="">
+                </div>
+            </div>
+        </section>
+
+        <!-- start gold-rate-section -->
+        <section class="gold-rate-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-12">
+                        <div class="wpo-section-title">
+                            <h2>Live Gold Prices</h2>
+                            <p>Real-time gold rates for investment and jewelry.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- 24 Karat -->
+                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                        <div class="gold-card">
+                            <div class="icon">
+                                <i class="flaticon-diamond"></i>
+                            </div>
+                            <h3>24 Karat Gold</h3>
+                            <span class="purity">99.9% Purity (Fine Gold)</span>
+                            <div class="price" id="price-24k">Loading...</div>
+                            <small>per gram</small>
+                        </div>
+                    </div>
+
+                    <!-- 22 Karat -->
+                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                        <div class="gold-card">
+                            <div class="icon">
+                                <i class="flaticon-wedding-ring"></i>
+                            </div>
+                            <h3>22 Karat Gold</h3>
+                            <span class="purity">91.6% Purity (Standard Jewelry)</span>
+                            <div class="price" id="price-22k">Loading...</div>
+                            <small>per gram</small>
+                        </div>
+                    </div>
+
+                    <!-- 18 Karat -->
+                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                        <div class="gold-card">
+                            <div class="icon">
+                                <i class="flaticon-necklace"></i>
+                            </div>
+                            <h3>18 Karat Gold</h3>
+                            <span class="purity">75.0% Purity (Diamond Jewelry)</span>
+                            <div class="price" id="price-18k">Loading...</div>
+                            <small>per gram</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rate-date">
+                    <p>Rates last updated: <span id="last-updated">Checking...</span></p>
+                    <p class="error-message" id="api-error">Unable to fetch live rates. Displaying estimated values.</p>
+                </div>
+                <div class="api-attribution">
+                    Market data provided by GoldAPI/MetalPriceAPI
+                </div>
+
+            </div>
+        </section>
+
+        <!-- start of wpo-site-footer-section -->
+        <footer class="wpo-site-footer">
+            <div class="wpo-upper-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col col-lg-3 col-md-6 col-sm-12 col-12">
+                            <div class="widget about-widget">
+                                <div class="logo widget-title">
+                                    <img src="assets/images/mdjlogo.svg" alt="blog">
+                                </div>
+                                <p>We Don’t Just Sell Jewellery. We Celebrate You</p>
+                                <ul class="social">
+                                    <li><a href="#"><i class="flaticon-facebook-app-symbol"></i></a></li>
+                                    <li><a href="#"><i class="flaticon-twitter"></i></a></li>
+                                    <li><a href="#"><i class="flaticon-linkedin"></i></a></li>
+                                    <li><a href="#"><i class="flaticon-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col col-lg-3 col-md-6 col-sm-12 col-12">
+                            <div class="widget link-widget">
+                                <div class="widget-title">
+                                    <h3>Quick Links:</h3>
+                                </div>
+                                <ul>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="terms.html">Terms & Conditions</a></li>
+                                    <li><a href="about.html">About</a></li>
+                                    <li><a href="privacy.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="wpo-lower-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col col-xs-12">
+                            <p class="copyright"> Copyright &copy; 2024 MDJ by <a href="index.html">Marudhar
+                                    jewellers</a>. All Rights Reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="shape">
+                <svg viewBox="0 0 260 394" fill="none">
+                    <rect opacity="0.5" x="0.5" y="0.5" width="191" height="393" rx="95.5" stroke="white"
+                        stroke-opacity="0.2" />
+                    <rect width="260" height="140" fill="#5C623D" />
+                </svg>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- All JavaScript files -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/modernizr.custom.js"></script>
+    <script src="assets/js/jquery.dlmenu.js"></script>
+    <script src="assets/js/jquery-plugin-collection.js"></script>
+    <script src="assets/js/script.js"></script>
+    <!-- Custom Gold Rate Script -->
+    <script src="assets/js/gold-rate.js"></script>
+</body>
+
+</html>
