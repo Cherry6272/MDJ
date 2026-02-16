@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="wpOceans">
     <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
-    <title>Live Gold Rates - Marudhar Jewellers</title>
+    <title>Live Gold & Silver Rates - MDJ | Marudhar Jewellers</title>
     <link href="assets/css/themify-icons.css" rel="stylesheet">
     <link href="assets/css/flaticon_jowenly.css" rel="stylesheet">
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -21,88 +21,262 @@
     <link href="assets/css/jquery.fancybox.css" rel="stylesheet">
     <link href="assets/css/odometer-theme-default.css" rel="stylesheet">
     <link href="assets/sass/style.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <style>
-        .gold-rate-section {
+        /* Soft UI Theme Scope */
+        :root {
+            --soft-bg: #fdfbf7;
+            --soft-card: #ffffff;
+            --soft-text: #2d3748;
+            --soft-green: #48bb78;
+            --soft-green-bg: #f0fff4;
+            --soft-red: #f56565;
+            --soft-red-bg: #fff5f5;
+            --soft-border: #f3f3f3;
+            --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --radius-lg: 16px;
+            --radius-sm: 8px;
+        }
+
+        .soft-section {
             padding: 80px 0;
-            background-color: #f9f9f9;
+            background-color: var(--soft-bg);
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .gold-card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s ease;
+        /* Card Styles */
+        .soft-card {
+            background: var(--soft-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--soft-shadow);
+            border: 1px solid var(--soft-border);
             height: 100%;
-            border: 1px solid #eee;
+            transition: transform 0.2s;
         }
 
-        .gold-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-color: #d4b067;
+        .soft-card:hover {
+            transform: translateY(-2px);
         }
 
-        .gold-card .icon {
-            font-size: 50px;
-            color: #d4b067;
-            margin-bottom: 20px;
+        .card-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
         }
 
-        .gold-card h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #333;
+        .metal-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border-radius: 50%;
+            margin-right: 12px;
         }
 
-        .gold-card .purity {
-            color: #777;
+        .icon-gold {
+            background: #fff8e1;
+            color: #d69e2e;
+        }
+
+        .icon-silver {
+            background: #edf2f7;
+            color: #718096;
+        }
+
+        .meta-title h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--soft-text);
+        }
+
+        .meta-title span {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .badge-percent {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-up {
+            background: var(--soft-green-bg);
+            color: var(--soft-green);
+        }
+
+        .badge-down {
+            background: var(--soft-red-bg);
+            color: var(--soft-red);
+        }
+
+        .price-main {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--soft-text);
+            margin: 12px 0 4px;
+            letter-spacing: -1px;
+        }
+
+        .unit-label {
+            font-size: 13px;
+            color: #a0aec0;
+            font-weight: 600;
+        }
+
+        .change-val {
             font-size: 14px;
-            margin-bottom: 20px;
+            font-weight: 700;
+            margin-top: 8px;
             display: block;
         }
 
-        .gold-card .price {
-            font-size: 36px;
-            font-weight: 700;
-            color: #d4b067;
-            margin-bottom: 10px;
+        .text-up {
+            color: var(--soft-green);
         }
 
-        .gold-card .price small {
-            font-size: 16px;
-            font-weight: 400;
-            color: #999;
+        .text-down {
+            color: var(--soft-red);
         }
 
-        .rate-date {
-            margin-top: 50px;
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
-
-        .api-attribution {
-            text-align: center;
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 10px;
-        }
-
-        .error-message {
-            color: red;
-            display: none;
+        .sparkline-container {
+            height: 40px;
             margin-top: 20px;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            opacity: 0.6;
+        }
+
+        .spark-bar {
+            flex: 1;
+            background: currentColor;
+            border-radius: 2px;
+        }
+
+        .stats-bar-card {
+            background: var(--soft-card);
+            border-radius: var(--radius-lg);
+            padding: 16px 24px;
+            box-shadow: var(--soft-shadow);
+            border: 1px solid var(--soft-border);
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #a0aec0;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 15px;
+        }
+
+        .stat-val {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--soft-text);
+        }
+
+        .stat-val.high {
+            color: var(--soft-green);
+        }
+
+        .stat-val.low {
+            color: var(--soft-red);
+        }
+
+        .table-card {
+            background: var(--soft-card);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--soft-shadow);
+            border: 1px solid var(--soft-border);
+            margin-top: 30px;
+        }
+
+        .table-header {
+            margin-bottom: 25px;
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--soft-text);
+        }
+
+        .table-header p {
+            font-size: 13px;
+            color: #718096;
+            margin: 4px 0 0;
+        }
+
+        .soft-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .soft-table th {
+            text-align: left;
+            padding: 16px;
+            font-size: 12px;
+            color: #a0aec0;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .soft-table td {
+            padding: 20px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--soft-text);
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .soft-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .trend-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .trend-up-icon {
+            color: var(--soft-green);
+        }
+
+        .trend-down-icon {
+            color: var(--soft-red);
         }
     </style>
 </head>
 
 <body>
 
-    <!-- start page-wrapper -->
     <div class="page-wrapper">
-
         <!-- Start header -->
         <header id="header">
             <div class="wpo-site-header">
@@ -148,15 +322,16 @@
                 <div class="row">
                     <div class="col col-xs-12">
                         <div class="wpo-breadcumb-wrap">
-                            <h2>Today's Gold Rate</h2>
+                            <h2>Gold & Silver Rates</h2>
                             <ol>
                                 <li><a href="index.html">Home</a></li>
                                 <li>Gold Rate</li>
                             </ol>
                         </div>
                     </div>
-                </div>
+                </div> <!-- end row -->
             </div>
+            <!-- end container -->
             <div class="left-img">
                 <img src="assets/images/pagetitle.png" alt="">
             </div>
@@ -164,70 +339,242 @@
                 <div class="shape-1">
                     <img src="assets/images/shape-1.png" alt="">
                 </div>
-                <div class="image">
-                    <img src="assets/images/pagetitle-1.jpg" alt="">
-                </div>
+                <!-- <div class="image">
+                    <img src="assets/images/pagetitle-1.jpg" alt=""> (Optional: Add specific image if needed)
+                </div> -->
                 <div class="shape-2">
                     <img src="assets/images/shape-2.png" alt="">
                 </div>
             </div>
         </section>
+        <!-- end page-title -->
 
-        <!-- start gold-rate-section -->
-        <section class="gold-rate-section">
+        <!-- Soft UI Dashboard Content (Wrapped in clean section) -->
+        <section class="soft-section">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 col-12">
-                        <div class="wpo-section-title">
-                            <h2>Live Gold Prices</h2>
-                            <p>Real-time gold rates for investment and jewelry.</p>
-                        </div>
-                    </div>
-                </div>
 
+                <!-- Cards Row -->
                 <div class="row">
-                    <!-- 24 Karat -->
-                    <div class="col-lg-4 col-md-6 col-12 mb-4">
-                        <div class="gold-card">
-                            <div class="icon">
-                                <i class="flaticon-diamond"></i>
+                    <!-- Gold 24K Card -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="soft-card">
+                            <div class="card-header-flex">
+                                <div class="d-flex align-items-center">
+                                    <div class="metal-icon icon-gold"><i class="ti-medall"></i></div>
+                                    <div class="meta-title">
+                                        <h4>Gold 24K</h4>
+                                        <span>999 Fine Gold</span>
+                                    </div>
+                                </div>
+                                <div class="badge-percent badge-up" id="pct-24k">+0.00%</div>
                             </div>
-                            <h3>24 Karat Gold</h3>
-                            <span class="purity">99.9% Purity (Fine Gold)</span>
-                            <div class="price" id="price-24k">Loading...</div>
-                            <small>per gram</small>
+                            <div class="price-main" id="price-24k">₹0,000</div>
+                            <div class="unit-label">per gram</div>
+                            <span class="change-val text-up" id="change-24k">▲ ₹0 today</span>
+
+                            <!-- Sparkline Decoration -->
+                            <div class="sparkline-container text-up">
+                                <div class="spark-bar" style="height: 40%"></div>
+                                <div class="spark-bar" style="height: 60%"></div>
+                                <div class="spark-bar" style="height: 50%"></div>
+                                <div class="spark-bar" style="height: 70%"></div>
+                                <div class="spark-bar" style="height: 55%"></div>
+                                <div class="spark-bar" style="height: 80%"></div>
+                                <div class="spark-bar" style="height: 75%"></div>
+                                <div class="spark-bar" style="height: 90%"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 22 Karat -->
-                    <div class="col-lg-4 col-md-6 col-12 mb-4">
-                        <div class="gold-card">
-                            <div class="icon">
-                                <i class="flaticon-wedding-ring"></i>
+                    <!-- Gold 22K Card -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="soft-card">
+                            <div class="card-header-flex">
+                                <div class="d-flex align-items-center">
+                                    <div class="metal-icon icon-gold"><i class="ti-star"></i></div>
+                                    <div class="meta-title">
+                                        <h4>Gold 22K</h4>
+                                        <span>916 Hallmark Gold</span>
+                                    </div>
+                                </div>
+                                <div class="badge-percent badge-up" id="pct-22k">+0.00%</div>
                             </div>
-                            <h3>22 Karat Gold</h3>
-                            <span class="purity">91.6% Purity (Standard Jewelry)</span>
-                            <div class="price" id="price-22k">Loading...</div>
-                            <small>per gram</small>
+                            <div class="price-main" id="price-22k">₹0,000</div>
+                            <div class="unit-label">per gram</div>
+                            <span class="change-val text-up" id="change-22k">▲ ₹0 today</span>
+
+                            <!-- Sparkline Decoration -->
+                            <div class="sparkline-container text-up">
+                                <div class="spark-bar" style="height: 30%"></div>
+                                <div class="spark-bar" style="height: 50%"></div>
+                                <div class="spark-bar" style="height: 45%"></div>
+                                <div class="spark-bar" style="height: 60%"></div>
+                                <div class="spark-bar" style="height: 40%"></div>
+                                <div class="spark-bar" style="height: 70%"></div>
+                                <div class="spark-bar" style="height: 65%"></div>
+                                <div class="spark-bar" style="height: 85%"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 18 Karat -->
+                    <!-- Silver Card (KG) -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="soft-card">
+                            <div class="card-header-flex">
+                                <div class="d-flex align-items-center">
+                                    <div class="metal-icon icon-silver"><i class="ti-cup"></i></div>
+                                    <div class="meta-title">
+                                        <h4>Silver</h4>
+                                        <span>999 Fine Silver</span>
+                                    </div>
+                                </div>
+                                <div class="badge-percent badge-up" id="pct-silver">+0.00%</div>
+                            </div>
+                            <div class="price-main" id="price-silver">₹000</div>
+                            <div class="unit-label">per gram</div>
+                            <span class="change-val text-up" id="change-silver">▲ ₹0 today</span>
 
+                            <!-- Sparkline Decoration -->
+                            <div class="sparkline-container text-up">
+                                <div class="spark-bar" style="height: 50%"></div>
+                                <div class="spark-bar" style="height: 40%"></div>
+                                <div class="spark-bar" style="height: 60%"></div>
+                                <div class="spark-bar" style="height: 50%"></div>
+                                <div class="spark-bar" style="height: 70%"></div>
+                                <div class="spark-bar" style="height: 60%"></div>
+                                <div class="spark-bar" style="height: 80%"></div>
+                                <div class="spark-bar" style="height: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="rate-date">
-                    <p>Rates last updated: <span id="last-updated">Checking...</span></p>
-                    <p class="error-message" id="api-error">Unable to fetch live rates. Displaying estimated values.</p>
+                <!-- Stats Bar (High/Low) -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stats-bar-card">
+                            <div class="d-flex align-items-center">
+                                <div class="metal-icon icon-gold" style="width:32px; height:32px; font-size:16px;"><i
+                                        class="ti-medall"></i></div>
+                                <span style="font-weight:700;">Gold 24K</span>
+                            </div>
+                            <div class="d-flex">
+                                <div class="stat-item mx-3">
+                                    <div style="text-align:right;">
+                                        <div class="stat-label">Day High</div>
+                                        <div class="stat-val high" id="high-24k">₹0,000</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div style="text-align:right;">
+                                        <div class="stat-label">Day Low</div>
+                                        <div class="stat-val low" id="low-24k">₹0,000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stats-bar-card">
+                            <div class="d-flex align-items-center">
+                                <div class="metal-icon icon-silver" style="width:32px; height:32px; font-size:16px;"><i
+                                        class="ti-cup"></i></div>
+                                <span style="font-weight:700;">Silver / (KG)</span>
+                            </div>
+                            <div class="d-flex">
+                                <div class="stat-item mx-3">
+                                    <div style="text-align:right;">
+                                        <div class="stat-label">Day High</div>
+                                        <div class="stat-val high" id="high-silver">₹00,000</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <div style="text-align:right;">
+                                        <div class="stat-label">Day Low</div>
+                                        <div class="stat-val low" id="low-silver">₹00,000</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="api-attribution">
-                    Market data provided by GoldAPI/MetalPriceAPI
+
+                <!-- Full Table -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>Gold & Silver Rates <span style="color:#a0aec0; font-weight:400;">(INR)</span></h3>
+                        <p>Gudiyatham store rates • Last updated: <span id="last-updated">---</span></p>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="soft-table">
+                            <thead>
+                                <tr>
+                                    <th>METAL</th>
+                                    <th>BUY (₹)</th>
+                                    <th>SELL (₹)</th>
+                                    <th>HIGH</th>
+                                    <th>LOW</th>
+                                    <th class="text-right">TREND</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="metal-icon icon-gold"
+                                                style="width:28px; height:28px; font-size:14px; margin-right:8px;"><i
+                                                    class="ti-medall"></i></div>
+                                            Gold 24K (999)
+                                        </div>
+                                    </td>
+                                    <td id="tbl-buy-24k">---</td>
+                                    <td id="tbl-sell-24k">---</td>
+                                    <td id="tbl-high-24k" class="text-success">---</td>
+                                    <td id="tbl-low-24k" class="text-danger">---</td>
+                                    <td class="text-right trend-icon" id="icon-24k">
+                                        <!-- SVG Icon populated by JS -->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="metal-icon icon-gold"
+                                                style="width:28px; height:28px; font-size:14px; margin-right:8px;"><i
+                                                    class="ti-star"></i></div>
+                                            Gold 22K (916)
+                                        </div>
+                                    </td>
+                                    <td id="tbl-buy-22k">---</td>
+                                    <td id="tbl-sell-22k">---</td>
+                                    <td id="tbl-high-22k" class="text-success">---</td>
+                                    <td id="tbl-low-22k" class="text-danger">---</td>
+                                    <td class="text-right trend-icon" id="icon-22k"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="metal-icon icon-silver"
+                                                style="width:28px; height:28px; font-size:14px; margin-right:8px;"><i
+                                                    class="ti-cup"></i></div>
+                                            Silver (999) KG
+                                        </div>
+                                    </td>
+                                    <td id="tbl-buy-silver">---</td>
+                                    <td id="tbl-sell-silver">---</td>
+                                    <td id="tbl-high-silver" class="text-success">---</td>
+                                    <td id="tbl-low-silver" class="text-danger">---</td>
+                                    <td class="text-right trend-icon" id="icon-silver"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- start of wpo-site-footer-section -->
+        <!-- Start Footer -->
         <footer class="wpo-site-footer">
             <div class="wpo-upper-footer">
                 <div class="container">
@@ -238,12 +585,6 @@
                                     <img src="assets/images/mdjlogo.svg" alt="blog">
                                 </div>
                                 <p>We Don’t Just Sell Jewellery. We Celebrate You</p>
-                                <ul class="social">
-                                    <li><a href="#"><i class="flaticon-facebook-app-symbol"></i></a></li>
-                                    <li><a href="#"><i class="flaticon-twitter"></i></a></li>
-                                    <li><a href="#"><i class="flaticon-linkedin"></i></a></li>
-                                    <li><a href="#"><i class="flaticon-instagram"></i></a></li>
-                                </ul>
                             </div>
                         </div>
                         <div class="col col-lg-3 col-md-6 col-sm-12 col-12">
@@ -254,9 +595,7 @@
                                 <ul>
                                     <li><a href="contact.html">Contact us</a></li>
                                     <li><a href="index.html">Home</a></li>
-                                    <li><a href="terms.html">Terms & Conditions</a></li>
-                                    <li><a href="about.html">About</a></li>
-                                    <li><a href="privacy.html">Privacy Policy</a></li>
+                                    <li><a href="gold-rate.html">Gold Rate</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -267,32 +606,21 @@
                 <div class="container">
                     <div class="row">
                         <div class="col col-xs-12">
-                            <p class="copyright"> Copyright &copy; 2024 MDJ by <a href="index.html">Marudhar
-                                    jewellers</a>. All Rights Reserved.</p>
+                            <p class="copyright"> Copyright &copy; 2024 MDJ. All Rights Reserved.</p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="shape">
-                <svg viewBox="0 0 260 394" fill="none">
-                    <rect opacity="0.5" x="0.5" y="0.5" width="191" height="393" rx="95.5" stroke="white"
-                        stroke-opacity="0.2" />
-                    <rect width="260" height="140" fill="#5C623D" />
-                </svg>
             </div>
         </footer>
 
     </div>
 
-    <!-- All JavaScript files -->
+    <!-- Scripts -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/modernizr.custom.js"></script>
-    <script src="assets/js/jquery.dlmenu.js"></script>
-    <script src="assets/js/jquery-plugin-collection.js"></script>
     <script src="assets/js/script.js"></script>
-    <!-- Custom Gold Rate Script -->
-    <script src="assets/js/gold-rate.js"></script>
+    <script src="assets/js/gold-rate.js?v=6.0"></script>
 </body>
 
 </html>
