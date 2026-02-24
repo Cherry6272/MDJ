@@ -1,5 +1,16 @@
 <!doctype html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="wpOceans" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="assets/images/favicon.png"
+    />
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -24,7 +35,24 @@
     <link href="assets/css/jquery.fancybox.css" rel="stylesheet" />
     <link href="assets/css/odometer-theme-default.css" rel="stylesheet" />
     <link href="assets/sass/style.css" rel="stylesheet" />
+    <link href="assets/css/themify-icons.css" rel="stylesheet" />
+    <link href="assets/css/flaticon_jowenly.css" rel="stylesheet" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/animate.css" rel="stylesheet" />
+    <link href="assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="assets/css/owl.theme.css" rel="stylesheet" />
+    <link href="assets/css/slick.css" rel="stylesheet" />
+    <link href="assets/css/slick-theme.css" rel="stylesheet" />
+    <link href="assets/css/swiper.min.css" rel="stylesheet" />
+    <link href="assets/css/owl.transitions.css" rel="stylesheet" />
+    <link href="assets/css/jquery.fancybox.css" rel="stylesheet" />
+    <link href="assets/css/odometer-theme-default.css" rel="stylesheet" />
+    <link href="assets/sass/style.css" rel="stylesheet" />
 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -45,7 +73,26 @@
         --radius-lg: 16px;
         --radius-sm: 8px;
       }
+      /* Soft UI Theme Scope */
+      :root {
+        --soft-bg: #fdfbf7;
+        --soft-card: #ffffff;
+        --soft-text: #2d3748;
+        --soft-green: #48bb78;
+        --soft-green-bg: #f0fff4;
+        --soft-red: #f56565;
+        --soft-red-bg: #fff5f5;
+        --soft-border: #f3f3f3;
+        --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        --radius-lg: 16px;
+        --radius-sm: 8px;
+      }
 
+      .soft-section {
+        padding: 80px 0;
+        background-color: var(--soft-bg);
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
       .soft-section {
         padding: 80px 0;
         background-color: var(--soft-bg);
@@ -62,11 +109,30 @@
         height: 100%;
         transition: transform 0.2s;
       }
+      /* Card Styles */
+      .soft-card {
+        background: var(--soft-card);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--soft-shadow);
+        border: 1px solid var(--soft-border);
+        height: 100%;
+        transition: transform 0.2s;
+      }
 
       .soft-card:hover {
         transform: translateY(-2px);
       }
+      .soft-card:hover {
+        transform: translateY(-2px);
+      }
 
+      .card-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
       .card-header-flex {
         display: flex;
         justify-content: space-between;
@@ -84,12 +150,30 @@
         border-radius: 50%;
         margin-right: 12px;
       }
+      .metal-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        border-radius: 50%;
+        margin-right: 12px;
+      }
 
       .icon-gold {
         background: #fff8e1;
         color: #d69e2e;
       }
+      .icon-gold {
+        background: #fff8e1;
+        color: #d69e2e;
+      }
 
+      .icon-silver {
+        background: #edf2f7;
+        color: #718096;
+      }
       .icon-silver {
         background: #edf2f7;
         color: #718096;
@@ -101,7 +185,18 @@
         margin: 0;
         color: var(--soft-text);
       }
+      .meta-title h4 {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--soft-text);
+      }
 
+      .meta-title span {
+        font-size: 12px;
+        color: #718096;
+        font-weight: 500;
+      }
       .meta-title span {
         font-size: 12px;
         color: #718096;
@@ -115,7 +210,18 @@
         font-weight: 700;
         display: inline-block;
       }
+      .badge-percent {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-block;
+      }
 
+      .badge-up {
+        background: var(--soft-green-bg);
+        color: var(--soft-green);
+      }
       .badge-up {
         background: var(--soft-green-bg);
         color: var(--soft-green);
@@ -125,7 +231,18 @@
         background: var(--soft-red-bg);
         color: var(--soft-red);
       }
+      .badge-down {
+        background: var(--soft-red-bg);
+        color: var(--soft-red);
+      }
 
+      .price-main {
+        font-size: 36px;
+        font-weight: 800;
+        color: var(--soft-text);
+        margin: 12px 0 4px;
+        letter-spacing: -1px;
+      }
       .price-main {
         font-size: 36px;
         font-weight: 800;
@@ -139,7 +256,18 @@
         color: #a0aec0;
         font-weight: 600;
       }
+      .unit-label {
+        font-size: 13px;
+        color: #a0aec0;
+        font-weight: 600;
+      }
 
+      .change-val {
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 8px;
+        display: block;
+      }
       .change-val {
         font-size: 14px;
         font-weight: 700;
@@ -150,7 +278,13 @@
       .text-up {
         color: var(--soft-green);
       }
+      .text-up {
+        color: var(--soft-green);
+      }
 
+      .text-down {
+        color: var(--soft-red);
+      }
       .text-down {
         color: var(--soft-red);
       }
@@ -163,7 +297,20 @@
         gap: 4px;
         opacity: 0.6;
       }
+      .sparkline-container {
+        height: 40px;
+        margin-top: 20px;
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        opacity: 0.6;
+      }
 
+      .spark-bar {
+        flex: 1;
+        background: currentColor;
+        border-radius: 2px;
+      }
       .spark-bar {
         flex: 1;
         background: currentColor;
@@ -181,12 +328,34 @@
         align-items: center;
         justify-content: space-between;
       }
+      .stats-bar-card {
+        background: var(--soft-card);
+        border-radius: var(--radius-lg);
+        padding: 16px 24px;
+        box-shadow: var(--soft-shadow);
+        border: 1px solid var(--soft-border);
+        margin-top: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
       .stat-item {
         display: flex;
         align-items: center;
       }
+      .stat-item {
+        display: flex;
+        align-items: center;
+      }
 
+      .stat-label {
+        font-size: 12px;
+        color: #a0aec0;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 15px;
+      }
       .stat-label {
         font-size: 12px;
         color: #a0aec0;
@@ -200,11 +369,22 @@
         font-weight: 700;
         color: var(--soft-text);
       }
+      .stat-val {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--soft-text);
+      }
 
       .stat-val.high {
         color: var(--soft-green);
       }
+      .stat-val.high {
+        color: var(--soft-green);
+      }
 
+      .stat-val.low {
+        color: var(--soft-red);
+      }
       .stat-val.low {
         color: var(--soft-red);
       }
@@ -217,11 +397,28 @@
         border: 1px solid var(--soft-border);
         margin-top: 30px;
       }
+      .table-card {
+        background: var(--soft-card);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        box-shadow: var(--soft-shadow);
+        border: 1px solid var(--soft-border);
+        margin-top: 30px;
+      }
 
       .table-header {
         margin-bottom: 25px;
       }
+      .table-header {
+        margin-bottom: 25px;
+      }
 
+      .table-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--soft-text);
+      }
       .table-header h3 {
         font-size: 18px;
         font-weight: 700;
@@ -234,13 +431,32 @@
         color: #718096;
         margin: 4px 0 0;
       }
+      .table-header p {
+        font-size: 13px;
+        color: #718096;
+        margin: 4px 0 0;
+      }
 
       .soft-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
       }
+      .soft-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
 
+      .soft-table th {
+        text-align: left;
+        padding: 16px;
+        font-size: 12px;
+        color: #a0aec0;
+        text-transform: uppercase;
+        font-weight: 700;
+        border-bottom: 2px solid #edf2f7;
+      }
       .soft-table th {
         text-align: left;
         padding: 16px;
@@ -258,7 +474,17 @@
         color: var(--soft-text);
         border-bottom: 1px solid #edf2f7;
       }
+      .soft-table td {
+        padding: 20px 16px;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--soft-text);
+        border-bottom: 1px solid #edf2f7;
+      }
 
+      .soft-table tr:last-child td {
+        border-bottom: none;
+      }
       .soft-table tr:last-child td {
         border-bottom: none;
       }
@@ -267,7 +493,14 @@
         width: 24px;
         height: 24px;
       }
+      .trend-icon svg {
+        width: 24px;
+        height: 24px;
+      }
 
+      .trend-up-icon {
+        color: var(--soft-green);
+      }
       .trend-up-icon {
         color: var(--soft-green);
       }
@@ -347,7 +580,9 @@
       }
     </style>
   </head>
+  </head>
 
+  <body>
   <body>
     <div class="page-wrapper">
       <header id="header">
@@ -519,7 +754,41 @@
                 <span class="change-val text-up" id="change-silver"
                   >▲ ₹0 today</span
                 >
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="soft-card">
+                <div class="card-header-flex">
+                  <div class="d-flex align-items-center">
+                    <div class="metal-icon icon-silver">
+                      <i class="ti-cup"></i>
+                    </div>
+                    <div class="meta-title">
+                      <h4>Silver</h4>
+                      <span>999 Fine Silver</span>
+                    </div>
+                  </div>
+                  <div class="badge-percent badge-up" id="pct-silver">
+                    +0.00%
+                  </div>
+                </div>
+                <div class="price-main" id="price-silver">₹000</div>
+                <div class="unit-label">per gram</div>
+                <span class="change-val text-up" id="change-silver"
+                  >▲ ₹0 today</span
+                >
 
+                <div class="sparkline-container text-up">
+                  <div class="spark-bar" style="height: 50%"></div>
+                  <div class="spark-bar" style="height: 40%"></div>
+                  <div class="spark-bar" style="height: 60%"></div>
+                  <div class="spark-bar" style="height: 50%"></div>
+                  <div class="spark-bar" style="height: 70%"></div>
+                  <div class="spark-bar" style="height: 60%"></div>
+                  <div class="spark-bar" style="height: 80%"></div>
+                  <div class="spark-bar" style="height: 95%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
                 <div class="sparkline-container text-up">
                   <div class="spark-bar" style="height: 50%"></div>
                   <div class="spark-bar" style="height: 40%"></div>
@@ -691,6 +960,94 @@
           </div>
         </div>
       </section>
+            <div class="table-responsive">
+              <table class="soft-table">
+                <thead>
+                  <tr>
+                    <th>METAL</th>
+                    <th>BUY (₹)</th>
+                    <th>SELL (₹)</th>
+                    <th>HIGH</th>
+                    <th>LOW</th>
+                    <th class="text-right">TREND</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="metal-icon icon-gold"
+                          style="
+                            width: 28px;
+                            height: 28px;
+                            font-size: 14px;
+                            margin-right: 8px;
+                          "
+                        >
+                          <i class="ti-medall"></i>
+                        </div>
+                        Gold 24K (999)
+                      </div>
+                    </td>
+                    <td id="tbl-buy-24k">---</td>
+                    <td id="tbl-sell-24k">---</td>
+                    <td id="tbl-high-24k" class="text-success">---</td>
+                    <td id="tbl-low-24k" class="text-danger">---</td>
+                    <td class="text-right trend-icon" id="icon-24k"></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="metal-icon icon-gold"
+                          style="
+                            width: 28px;
+                            height: 28px;
+                            font-size: 14px;
+                            margin-right: 8px;
+                          "
+                        >
+                          <i class="ti-star"></i>
+                        </div>
+                        Gold 22K (916)
+                      </div>
+                    </td>
+                    <td id="tbl-buy-22k">---</td>
+                    <td id="tbl-sell-22k">---</td>
+                    <td id="tbl-high-22k" class="text-success">---</td>
+                    <td id="tbl-low-22k" class="text-danger">---</td>
+                    <td class="text-right trend-icon" id="icon-22k"></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="metal-icon icon-silver"
+                          style="
+                            width: 28px;
+                            height: 28px;
+                            font-size: 14px;
+                            margin-right: 8px;
+                          "
+                        >
+                          <i class="ti-cup"></i>
+                        </div>
+                        Silver (999) KG
+                      </div>
+                    </td>
+                    <td id="tbl-buy-silver">---</td>
+                    <td id="tbl-sell-silver">---</td>
+                    <td id="tbl-high-silver" class="text-success">---</td>
+                    <td id="tbl-low-silver" class="text-danger">---</td>
+                    <td class="text-right trend-icon" id="icon-silver"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <footer class="wpo-site-footer">
         <div class="wpo-upper-footer">
@@ -740,3 +1097,4 @@
     <script src="assets/js/gold-rate.js?v=9.0"></script>
   </body>
 </html>
+
