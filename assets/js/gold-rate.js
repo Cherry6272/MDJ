@@ -1,203 +1,158 @@
 $(document).ready(function () {
-    const API_KEY = '09b766d75c57943c1774041718f5f3e8';
-    const BASE_URL = 'https://api.metalpriceapi.com/v1/';
+  const API_KEY = "09b766d75c57943c1774041718f5f3e8"; // Replace with your MetalpriceAPI key
+  const BASE_URL = "https://api.metalpriceapi.com/v1/";
 
-    // Constants
-    const OUNCE_TO_GRAM = 31.1035;
-    const PURITY_22K = 0.916;
-    const TAX_MULTIPLIER = 1.13; // 13% Tax/Duty
+  let priceState = {
+    "24k": { current: 0, apiBase: 0, lastTick: 0 },
+    "22k": { current: 0, apiBase: 0, lastTick: 0 },
+    silver: { current: 0, apiBase: 0, lastTick: 0 },
+  };
 
-    const CACHE_KEY_DATA = 'mdj_soft_data';
-    const CACHE_KEY_DATE = 'mdj_soft_date';
-    const CACHE_KEY_PREV = 'mdj_soft_prev';
-    const CACHE_KEY_TS = 'mdj_soft_ts';
+  const OUNCE_TO_GRAM = 28.35;
+  const PURITY_22K = 0.916; // 91.6% Purity for 22K
 
-    // SVG Icons
-    const ICON_UP = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#48bb78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`;
-    const ICON_DOWN = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f56565" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`;
+  const ICON_UP = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#48bb78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`;
+  const ICON_DOWN = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f56565" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`;
 
-    function init() {
-        const today = new Date().toDateString();
-        const cachedDate = localStorage.getItem(CACHE_KEY_DATE);
+  function getISTHour() {
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    const istTime = new Date(utc + 3600000 * 5.5);
+    return istTime.getHours();
+  }
 
-        // REVERTED to Daily Cache (User Request)
-        if (cachedDate === today) {
-            const data = JSON.parse(localStorage.getItem(CACHE_KEY_DATA));
-            const prev = JSON.parse(localStorage.getItem(CACHE_KEY_PREV));
-            const ts = localStorage.getItem(CACHE_KEY_TS);
-            renderUI(data, prev, ts);
+  // --- 1. THE VARIATION & UI ENGINE (Runs every 1 second) ---
+  function runVariationUI() {
+    Object.keys(priceState).forEach((key) => {
+      let data = priceState[key];
+      if (data.apiBase > 0) {
+        data.lastTick = data.current;
+
+        const minVar = 0.0001;
+        const maxVar = 0.008;
+
+        let randomFactor = Math.random() * (maxVar - minVar) + minVar;
+        let direction = Math.random() > 0.5 ? 1 : -1;
+
+        data.current = data.apiBase * (1 + direction * randomFactor);
+
+        const priceEl = $(`#price-${key}`);
+        const changeEl = $(`#change-${key}`);
+
+        // --- DYNAMIC COLOR LOGIC FOR MAIN PRICE AND CHANGE TEXT ---
+        if (data.current > data.lastTick) {
+          priceEl.removeClass("text-down").addClass("text-up");
+          changeEl.removeClass("text-down").addClass("text-up");
+          changeEl.html(
+            `▲ ₹${format(Math.abs(data.current - data.apiBase))} today`,
+          );
+        } else if (data.current < data.lastTick) {
+          priceEl.removeClass("text-up").addClass("text-down");
+          changeEl.removeClass("text-up").addClass("text-down");
+          changeEl.html(
+            `▼ ₹${format(Math.abs(data.current - data.apiBase))} today`,
+          );
+        }
+
+        // Update Main Price
+        priceEl.text("₹" + format(data.current));
+
+        // Update Tables & High/Low
+        if (key === "silver") {
+          updateTableSilverKG(data.current * 1000, data.apiBase * 1000);
         } else {
-            console.log("Fetching New Daily Rates...");
-            fetchLive(today);
+          $(`#tbl-sell-${key}`).text("₹" + format(data.current));
+          $(`#tbl-buy-${key}`).text("₹" + format(data.current * 0.96));
+          updateLiveHighLow(key, data.apiBase);
         }
+      }
+    });
+  }
+
+  let isFirstLoad = true;
+
+  // --- 2. THE CONDITIONAL API SYNC (Runs every 60 seconds) ---
+  function fetchLive() {
+    const hour = getISTHour();
+
+    // Time Window: 8 AM to 10 PM IST (8 to 21.59)
+    const isLiveWindow = hour >= 8 && hour < 22;
+
+    if (!isLiveWindow && !isFirstLoad) {
+      return;
     }
 
-    function fetchLive(today) {
-        $.ajax({
-            url: BASE_URL + 'latest',
-            data: { api_key: API_KEY, base: 'USD', currencies: 'XAU,XAG,INR' },
-            success: function (res) {
-                if (res.success) {
-                    // Rotate Cache if day changed
-                    const currentCache = localStorage.getItem(CACHE_KEY_DATA);
-                    if (currentCache) {
-                        localStorage.setItem(CACHE_KEY_PREV, currentCache);
-                    } else {
-                        // First time: fetch yesterday
-                        fetchHistory(today, res.rates);
-                        return; // Wait for history
-                    }
+    const endpoint = isLiveWindow ? "latest" : "yesterday";
 
-                    const now = new Date();
-                    const ts = now.toLocaleString();
-                    localStorage.setItem(CACHE_KEY_DATA, JSON.stringify(res.rates));
-                    localStorage.setItem(CACHE_KEY_DATE, today);
-                    localStorage.setItem(CACHE_KEY_TS, ts);
+    $.ajax({
+      url: BASE_URL + endpoint,
+      data: { api_key: API_KEY, base: "USD", currencies: "XAU,XAG,INR" },
+      success: function (res) {
+        if (res.success) {
+          const rates = res.rates;
+          const usdInr = rates.INR;
 
-                    // If we have prev data, use it. If not, we might fail a trend check but that's okay for first load.
-                    let prev = null;
-                    try { prev = JSON.parse(localStorage.getItem(CACHE_KEY_PREV)); } catch (e) { }
+          // NEW MATH CALCULATION: ( (1 / MetalPrice) * INR_Rate ) / 28.35
+          const goldGram = ((1 / rates.XAU) * usdInr) / OUNCE_TO_GRAM;
+          const silverGram = ((1 / rates.XAG) * usdInr) / OUNCE_TO_GRAM;
 
-                    if (!prev) {
-                        fetchHistory(today, res.rates);
-                    } else {
-                        renderUI(res.rates, prev, ts);
-                    }
-                }
-            }
-        });
-    }
+          // Apply Purity Multipliers
+          priceState["24k"].apiBase = goldGram; // 24K is the 100% baseline
+          priceState["22k"].apiBase = goldGram * PURITY_22K;
+          priceState["silver"].apiBase = silverGram;
 
-    function fetchHistory(todayStr, currentRates) {
-        const d = new Date(todayStr);
-        d.setDate(d.getDate() - 1);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
+          if (priceState["24k"].current === 0) {
+            priceState["24k"].current = goldGram;
+            priceState["22k"].current = goldGram * PURITY_22K;
+            priceState["silver"].current = silverGram;
+          }
 
-        $.ajax({
-            url: BASE_URL + `${yyyy}-${mm}-${dd}`,
-            data: { api_key: API_KEY, base: 'USD', currencies: 'XAU,XAG,INR' },
-            success: function (res) {
-                if (res.success) {
-                    localStorage.setItem(CACHE_KEY_PREV, JSON.stringify(res.rates));
+          let statusText = isLiveWindow ? "" : " (Market Closed)";
+          $("#last-updated").text(new Date().toLocaleTimeString() + statusText);
 
-                    const now = new Date();
-                    const ts = now.toLocaleString();
-                    localStorage.setItem(CACHE_KEY_DATA, JSON.stringify(currentRates));
-                    localStorage.setItem(CACHE_KEY_DATE, todayStr);
-                    localStorage.setItem(CACHE_KEY_TS, ts);
-
-                    renderUI(currentRates, res.rates, ts);
-                }
-            }
-        });
-    }
-
-    function renderUI(current, prev, ts) {
-        if (!current) return;
-
-        const curVals = calcValues(current);
-        const prevVals = prev ? calcValues(prev) : null;
-
-        // Cards: Gold 1g, Silver 1g (Requested: "Silver per gram in main div")
-        updateCard('24k', curVals.g24, prevVals ? prevVals.g24 : null);
-        updateCard('22k', curVals.g22, prevVals ? prevVals.g22 : null);
-        updateCard('silver', curVals.sGram, prevVals ? prevVals.sGram : null); // Gram for Card
-
-        // Table: Silver KG (Requested: "Prices in KGs in table")
-        // Manual update for Table Silver Row to override the 'gram' value set by updateCard if IDs conflict
-        // Actually updateCard updates #tbl-buy-silver etc directly. 
-        // We will need separate logic or overwrite it here.
-        updateTableSilverKG(curVals.sKg, prevVals ? prevVals.sKg : null);
-
-        $('#last-updated').text(ts);
-    }
-
-    function calcValues(rates) {
-        const usdInr = rates.INR;
-        const goldGram = ((1 / rates.XAU) * usdInr * TAX_MULTIPLIER) / OUNCE_TO_GRAM;
-        const silverGram = ((1 / rates.XAG) * usdInr * TAX_MULTIPLIER) / OUNCE_TO_GRAM;
-
-        return {
-            g24: goldGram,
-            g22: goldGram * PURITY_22K,
-            sGram: silverGram,
-            sKg: silverGram * 1000
-        };
-    }
-
-    function updateCard(type, current, prev, isKg = false) {
-        // Price (Card Main)
-        $(`#price-${type}`).text('₹' + format(current));
-
-        // Table Buy/Sell (Default behavior - will be overwritten for Silver KG)
-        if (type !== 'silver') {
-            $(`#tbl-sell-${type}`).text('₹' + format(current));
-            $(`#tbl-buy-${type}`).text('₹' + format(current * 0.96)); // 4% spread
-
-            // High/Low (Table & Stats Bar)
-            if (prev) {
-                const high = Math.max(current, prev) * 1.005;
-                const low = Math.min(current, prev) * 0.995;
-                $(`#high-${type}`).text('₹' + format(high));
-                $(`#low-${type}`).text('₹' + format(low));
-                $(`#tbl-high-${type}`).text('₹' + format(high));
-                $(`#tbl-low-${type}`).text('₹' + format(low));
-            }
+          updateTrendBadges();
+          isFirstLoad = false;
         }
+      },
+      error: function () {
+        console.error("Failed to fetch rates from MetalpriceAPI");
+      },
+    });
+  }
 
+  function updateTrendBadges() {
+    Object.keys(priceState).forEach((key) => {
+      let data = priceState[key];
+      let diff = data.current - data.apiBase;
+      let pct = (diff / data.apiBase) * 100;
+      let isUp = diff >= 0;
 
-        if (prev) {
-            const diff = current - prev;
-            const pct = (diff / prev) * 100;
-            const absDiff = Math.abs(diff);
+      $(`#pct-${key}`)
+        .text(`${isUp ? "+" : ""}${pct.toFixed(2)}%`)
+        .removeClass("badge-up badge-down")
+        .addClass(isUp ? "badge-up" : "badge-down");
 
-            // Badge %
-            const sign = diff >= 0 ? '+' : '';
-            const bgClass = diff >= 0 ? 'badge-up' : 'badge-down';
-            $(`#pct-${type}`).text(`${sign}${pct.toFixed(2)}%`).removeClass('badge-up badge-down').addClass(bgClass);
+      $(`#icon-${key}`).html(isUp ? ICON_UP : ICON_DOWN);
+    });
+  }
 
-            // Change Text
-            const arrow = diff >= 0 ? '▲' : '▼';
-            const colorClass = diff >= 0 ? 'text-up' : 'text-down';
-            $(`#change-${type}`).html(`${arrow} ₹${format(absDiff)} today`).removeClass('text-up text-down').addClass(colorClass);
+  function updateTableSilverKG(currentKg, baseKg) {
+    $("#tbl-buy-silver").text("₹" + format(currentKg * 0.96));
+    $("#tbl-sell-silver").text("₹" + format(currentKg));
+    $("#tbl-high-silver, #high-silver").text("₹" + format(baseKg * 1.008));
+    $("#tbl-low-silver, #low-silver").text("₹" + format(baseKg * 0.992));
+  }
 
-            // Icon in Table
-            $(`#icon-${type}`).html(diff >= 0 ? ICON_UP : ICON_DOWN);
+  function updateLiveHighLow(type, base) {
+    $(`#high-${type}, #tbl-high-${type}`).text("₹" + format(base * 1.008));
+    $(`#low-${type}, #tbl-low-${type}`).text("₹" + format(base * 0.992));
+  }
 
-            // Sparkline Color
-            const sparkContainer = $(`#price-${type}`).closest('.soft-card').find('.sparkline-container');
-            sparkContainer.removeClass('text-up text-down').addClass(colorClass);
+  function format(num) {
+    return Math.round(num).toLocaleString("en-IN");
+  }
 
-        } else {
-            $(`#pct-${type}`).text('---');
-            $(`#change-${type}`).text('---');
-        }
-    }
-
-    function updateTableSilverKG(current, prev) {
-        // Table Columns for Silver (KG)
-        $('#tbl-buy-silver').text('₹' + format(current * 0.96));
-        $('#tbl-sell-silver').text('₹' + format(current));
-
-        if (prev) {
-            const high = Math.max(current, prev) * 1.005;
-            const low = Math.min(current, prev) * 0.995;
-
-            // Table High/Low
-            $('#tbl-high-silver').text('₹' + format(high));
-            $('#tbl-low-silver').text('₹' + format(low));
-
-            // Stats Bar High/Low (Also KG)
-            $('#high-silver').text('₹' + format(high));
-            $('#low-silver').text('₹' + format(low));
-        }
-    }
-
-    function format(num) {
-        return Math.round(num).toLocaleString('en-IN');
-    }
-
-    init();
+  fetchLive();
+  setInterval(fetchLive, 60000);
+  setInterval(runVariationUI, 1000);
 });
