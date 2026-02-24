@@ -147,32 +147,11 @@ $(document).ready(function () {
     $(`#high-${type}, #tbl-high-${type}`).text("₹" + format(base * 1.008));
     $(`#low-${type}, #tbl-low-${type}`).text("₹" + format(base * 0.992));
   }
-      $(`#icon-${key}`).html(isUp ? ICON_UP : ICON_DOWN);
-    });
-  }
-
-  function updateTableSilverKG(currentKg, baseKg) {
-    $("#tbl-buy-silver").text("₹" + format(currentKg * 0.96));
-    $("#tbl-sell-silver").text("₹" + format(currentKg));
-    $("#tbl-high-silver, #high-silver").text("₹" + format(baseKg * 1.008));
-    $("#tbl-low-silver, #low-silver").text("₹" + format(baseKg * 0.992));
-  }
-
-  function updateLiveHighLow(type, base) {
-    $(`#high-${type}, #tbl-high-${type}`).text("₹" + format(base * 1.008));
-    $(`#low-${type}, #tbl-low-${type}`).text("₹" + format(base * 0.992));
-  }
 
   function format(num) {
     return Math.round(num).toLocaleString("en-IN");
   }
-  function format(num) {
-    return Math.round(num).toLocaleString("en-IN");
-  }
 
-  fetchLive();
-  setInterval(fetchLive, 60000);
-  setInterval(runVariationUI, 1000);
   fetchLive();
   setInterval(fetchLive, 60000);
   setInterval(runVariationUI, 1000);
